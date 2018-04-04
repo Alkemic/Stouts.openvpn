@@ -108,6 +108,10 @@ openvpn_unified_client_profiles: no
 openvpn_push_routes_to_client:
   - route 192.168.0.0 255.255.255.0
   - route 192.168.10.0 255.255.255.0
+
+# Download the created client credentials to the specified directory
+openvpn_download_clients: no
+openvpn_download_dir: "client_credentials"
 ```
 
 #### Usage
