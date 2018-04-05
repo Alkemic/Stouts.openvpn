@@ -31,7 +31,7 @@
 
 - name: Generate Server keys
   command: "{{openvpn_etcdir}}/build-server.sh"
-  args: { creates: "{{ openvpn_keydir }}" }
+  args: { creates: "{{ openvpn_keydir }}/server.key" }
 
 - name: Generate tls-auth key
   command: openvpn --genkey --secret {{ openvpn_tls_key }}
