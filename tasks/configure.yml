@@ -64,7 +64,7 @@
   when: openvpn_client_config_dir is defined
   tags: [openvpn_clients]
 
-- name: Set clients server configuration directory if requested
+- name: Set clients server configuration if requested
   copy:
     dest: "{{ openvpn_client_config_dir }}/{{ item.key }}"
     content: "{{ item.value }}"
