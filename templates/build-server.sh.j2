@@ -17,7 +17,3 @@
 $EASY_RSA/pkitool --initca && \
 $EASY_RSA/pkitool --server server && \
 $OPENSSL dhparam -out ${KEY_DIR}/dh${KEY_SIZE}.pem ${KEY_SIZE}
-
-{% for client in openvpn_clients %}
-$EASY_RSA/pkitool {{ client }}
-{% endfor %}

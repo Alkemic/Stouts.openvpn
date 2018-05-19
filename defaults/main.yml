@@ -30,6 +30,7 @@ openvpn_user: nobody
 openvpn_group: nogroup
 openvpn_resolv_retry: infinite
 openvpn_client_to_client: yes
+openvpn_push_routes_to_client: no
 openvpn_server_options: []                          # Additional server options
                                                     # openvpn_server_options:
                                                     # - dev-node MyTap
@@ -67,3 +68,7 @@ openvpn_simple_auth_password: ""
 
 # Whether to embed CA, cert, and key info inside client OVPN config file.
 openvpn_unified_client_profiles: no
+
+# Download the created client credentials to the specified directory
+openvpn_download_clients: no
+openvpn_download_dir: "client_credentials/"

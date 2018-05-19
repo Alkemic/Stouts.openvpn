@@ -31,7 +31,7 @@
 
 - name: Generate Server keys
   command: "{{openvpn_etcdir}}/build-server.sh"
-  args: { creates: "{{ openvpn_keydir }}" }
+  args: { creates: "{{ openvpn_keydir }}/server.key" }
 
 - name: Generate tls-auth key
   command: openvpn --genkey --secret {{ openvpn_tls_key }}
@@ -44,14 +44,17 @@
   command: "{{openvpn_etcdir}}/build-client.sh {{item}}"
   args: { creates: "{{ openvpn_keydir }}/{{item}}.crt" }
   with_items: "{{ openvpn_clients }}"
+  tags: [openvpn_clients]
 
 - name: Revoke Clients keys
   command: "{{openvpn_etcdir}}/revoke-client.sh {{item}}"
   args: { removes: "{{ openvpn_keydir }}/{{item}}.crt" }
   with_items: "{{ openvpn_clients_revoke }}"
+  tags: [openvpn_clients]
 
 - include: read-client-files.yml
   when: openvpn_unified_client_profiles
+  tags: [openvpn_clients]
 
 - name: Create client configuration directory if requested
   file: >
@@ -59,16 +62,27 @@
     mode=755
     state=directory
   when: openvpn_client_config_dir is defined
+  tags: [openvpn_clients]
+
+- name: Set clients server configuration if requested
+  copy:
+    dest: "{{ openvpn_client_config_dir }}/{{ item.key }}"
+    content: "{{ item.value }}"
+  with_dict: "{{ openvpn_client_configs }}"
+  when: openvpn_client_config_dir is defined and openvpn_client_configs
+  tags: [openvpn_clients]
 
 - name: Check if crl.pem exists
   stat: path={{openvpn_keydir}}/crl.pem
   register: crl_pem_file
+  tags: [openvpn_clients]
 
 - name: Generate Clients configurations
   template: src=client.conf.j2 dest={{openvpn_keydir}}/{{item}}.ovpn
   with_items: "{{ openvpn_clients }}"
   notify: openvpn pack clients
   register: openvpn_clients_changed
+  tags: [openvpn_clients]
 
 - name: Setup PAM
   template: src=openvpn.pam.j2 dest=/etc/pam.d/openvpn
